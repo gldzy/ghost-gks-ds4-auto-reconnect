@@ -14,7 +14,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt update
-          sudo apt install -y clang-18 lld-18 make git
+          sudo apt install -y clang-16 lld-16 make git
 
       - name: Checkout ps5-payload-sdk
         uses: actions/checkout@v4
