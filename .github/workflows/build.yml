@@ -10,17 +10,20 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        id: src
 
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y clang-18 lld-18 make git xxd
 
-      - name: Clone ps5-payload-sdk to parent dir
-        run: git clone --depth=1 https://github.com/ps5-payload-dev/sdk ../ps5-payload-sdk
+      - name: Clone ps5-payload-sdk to /opt/ps5-payload-sdk
+        run: |
+          sudo git clone --depth=1 https://github.com/ps5-payload-dev/sdk /opt/ps5-payload-sdk
+          sudo chmod -R 777 /opt/ps5-payload-sdk
 
       - name: Set SDK env
-        run: echo "PS5_PAYLOAD_SDK=$PWD/../ps5-payload-sdk" >> $GITHUB_ENV
+        run: echo "PS5_PAYLOAD_SDK=/opt/ps5-payload-sdk" >> $GITHUB_ENV
 
       - name: Compile payload
         run: |
