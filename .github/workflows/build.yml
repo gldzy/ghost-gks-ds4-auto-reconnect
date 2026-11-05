@@ -1,11 +1,10 @@
-name: Build GhostControl DS4 Auto-Reconnect Payload
+name: Build Payload
 on:
   push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build_payload:
+  build:
     runs-on: windows-latest
     defaults:
       run:
@@ -17,27 +16,20 @@ jobs:
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: clang64
+          msystem: uc64
           update: true
-          install: make git mingw-w64-clang-x86_64-clang
 
-      - name: Fix script path & CRLF
-        run: |
-          sed -i 's|/c/msys64/clang64/bin/clang.exe|clang|g' ./build_correction.sh
-          sed -i 's/\r$//' ./build_correction.sh
-          chmod +x ./build_correction.sh
+      - name: Install aarch64 clang
+        run: pacman -S --needed mingw-w64-clang-aarch64-clang
+
+      - name: Fix script CRLF
+        run: sed -i 's/\r$//' build_correction.sh
 
       - name: Run build script
-        run: |
-          ./build_correction.sh
-          ls -laR
+        run: ./build_correction.sh
 
       - name: Upload elf artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ghost-ds4-reconnect-elf
-          path: |
-            *.elf
-            build/*.elf
-            out/*.elf
-          if-no-files-found: error
+          name: ghost-gamesir
+          path: ghost_gamesir.elf
