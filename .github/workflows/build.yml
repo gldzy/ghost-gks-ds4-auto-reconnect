@@ -12,15 +12,15 @@ jobs:
       - name: Checkout repository source
         uses: actions/checkout@v4
 
-      - name: Install PS5 build dependencies
+      - name: Install build dependencies
         run: |
           sudo apt update
-          sudo apt install -y gcc make git cmake
+          sudo apt install -y gcc make git cmake wget unzip
 
-      - name: Set up PS5SDK
-        uses: ps5dev/setup-ps5sdk@v1
-        with:
-          ps5sdk-version: latest
+      - name: Download and setup PS5SDK
+        run: |
+          git clone --depth=1 https://github.com/ps5dev/ps5sdk.git ~/ps5sdk
+          echo "PS5SDK=$HOME/ps5sdk" >> $GITHUB_ENV
 
       - name: Compile payload
         run: |
