@@ -6,26 +6,21 @@ on:
 
 jobs:
   build_payload:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout your payload source
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Add llvm.org apt source & install clang-18 lld-18
+      - name: Install dependencies
         run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 18 all
-          sudo apt install -y make git xxd
+          sudo apt update
+          sudo apt install -y clang-18 lld-18 make git xxd
 
-      - name: Checkout ps5-payload-sdk
-        uses: actions/checkout@v4
-        with:
-          repository: ps5-payload-dev/sdk
-          path: ps5-payload-sdk
+      - name: Clone ps5-payload-sdk to parent dir
+        run: git clone --depth=1 https://github.com/ps5-payload-dev/sdk ../ps5-payload-sdk
 
       - name: Set SDK env
-        run: echo "PS5_PAYLOAD_SDK=$PWD/ps5-payload-sdk" >> $GITHUB_ENV
+        run: echo "PS5_PAYLOAD_SDK=$PWD/../ps5-payload-sdk" >> $GITHUB_ENV
 
       - name: Compile payload
         run: |
