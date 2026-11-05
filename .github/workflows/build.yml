@@ -19,14 +19,16 @@ jobs:
         with:
           msystem: clang64
           update: true
-          install: make git
+          install: make clang git
 
-      - name: Fix CRLF
-        run: sed -i 's/\r$//' ./build_correction.sh
+      - name: Fix script
+        run: |
+          sed -i 's|/c/msys64/clang64/bin/clang.exe|clang|g' ./build_correction.sh
+          sed -i 's/\r$//' ./build_correction.sh
+          chmod +x ./build_correction.sh
 
       - name: Run build script
         run: |
-          chmod +x ./build_correction.sh
           ./build_correction.sh
           ls -laR
 
