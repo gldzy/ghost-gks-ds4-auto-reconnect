@@ -19,9 +19,9 @@ jobs:
         with:
           msystem: clang64
           update: true
-          install: make clang git
+          install: make git mingw-w64-clang-x86_64-clang
 
-      - name: Fix script
+      - name: Fix script path & CRLF
         run: |
           sed -i 's|/c/msys64/clang64/bin/clang.exe|clang|g' ./build_correction.sh
           sed -i 's/\r$//' ./build_correction.sh
