@@ -31,11 +31,15 @@ jobs:
       - name: Compile payload
         run: |
           make clean
-          make all
+          make all V=1
+          echo "===== After build file list ====="
           ls -laR
 
       - name: Upload elf artifact
         uses: actions/upload-artifact@v4
         with:
           name: ghost-ds4-reconnect-elf
-          path: build/*.elf
+          path: |
+            *.elf
+            build/*.elf
+            out/*.elf
