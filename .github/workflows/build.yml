@@ -11,10 +11,12 @@ jobs:
       - name: Checkout your payload source
         uses: actions/checkout@v4
 
-      - name: Install build dependencies
+      - name: Add llvm.org apt source & install clang-18 lld-18
         run: |
-          sudo apt update
-          sudo apt install -y clang-16 lld-16 make git
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18 all
+          sudo apt install -y make git xxd
 
       - name: Checkout ps5-payload-sdk
         uses: actions/checkout@v4
