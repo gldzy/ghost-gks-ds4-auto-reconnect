@@ -6,33 +6,28 @@ on:
 
 jobs:
   build_payload:
-    runs-on: ubuntu-24.04
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: clang64
+          update: true
+          install: make git
+
+      - name: Fix CRLF
+        run: sed -i 's/\r$//' ./build_correction.sh
+
+      - name: Run build script
         run: |
-          sudo apt update
-          sudo apt install -y clang lld make git xxd
-
-      - name: Clone ps5-payload-sdk
-        run: git clone --depth=1 https://github.com/ps5-payload-dev/sdk /tmp/ps5-sdk-src
-
-      - name: Build and install SDK
-        run: |
-          cd /tmp/ps5-sdk-src
-          make
-          sudo make DESTDIR=/opt/ps5-payload-sdk install
-
-      - name: Set SDK env
-        run: echo "PS5_PAYLOAD_SDK=/opt/ps5-payload-sdk" >> $GITHUB_ENV
-
-      - name: Build payload via Makefile
-        run: |
-          make clean
-          make all
-          echo "===== After build file list ====="
+          chmod +x ./build_correction.sh
+          ./build_correction.sh
           ls -laR
 
       - name: Upload elf artifact
@@ -43,3 +38,4 @@ jobs:
             *.elf
             build/*.elf
             out/*.elf
+          if-no-files-found: error
