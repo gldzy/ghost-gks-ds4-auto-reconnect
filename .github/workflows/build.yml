@@ -1,5 +1,4 @@
 name: Build GhostControl DS4 Auto-Reconnect Payload
-
 on:
   push:
     branches: [ main ]
@@ -7,27 +6,31 @@ on:
 
 jobs:
   build_payload:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout repository source
+      - name: Checkout your payload source
         uses: actions/checkout@v4
 
       - name: Install build dependencies
         run: |
           sudo apt update
-          sudo apt install -y gcc make git cmake wget unzip
+          sudo apt install -y clang-18 lld-18 make git
 
-      - name: Download and setup PS5SDK
-        run: |
-          git clone --depth=1 https://github.com/ps5dev/ps5sdk.git ~/ps5sdk
-          echo "PS5SDK=$HOME/ps5sdk" >> $GITHUB_ENV
+      - name: Checkout ps5-payload-sdk
+        uses: actions/checkout@v4
+        with:
+          repository: ps5-payload-dev/sdk
+          path: ps5-payload-sdk
+
+      - name: Set SDK env
+        run: echo "PS5_PAYLOAD_SDK=$PWD/ps5-payload-sdk" >> $GITHUB_ENV
 
       - name: Compile payload
         run: |
           make clean
           make all
 
-      - name: Upload compiled ELF
+      - name: Upload elf artifact
         uses: actions/upload-artifact@v4
         with:
           name: ghost-ds4-reconnect-elf
