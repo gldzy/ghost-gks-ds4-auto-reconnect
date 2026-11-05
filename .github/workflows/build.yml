@@ -11,6 +11,9 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Fix CRLF line endings
+        run: sed -i 's/\r$//' ./build_correction.sh
+
       - name: Install dependencies
         run: |
           sudo apt update
