@@ -28,10 +28,10 @@ jobs:
       - name: Set SDK env
         run: echo "PS5_PAYLOAD_SDK=/opt/ps5-payload-sdk" >> $GITHUB_ENV
 
-      - name: Compile payload
+      - name: Build payload
         run: |
-          make clean
-          make all V=1
+          chmod +x ./build_correction.sh
+          ./build_correction.sh
           echo "===== After build file list ====="
           ls -laR
 
