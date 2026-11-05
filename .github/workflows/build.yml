@@ -11,13 +11,10 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Fix CRLF line endings
-        run: sed -i 's/\r$//' ./build_correction.sh
-
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y clang-18 lld-18 make git xxd
+          sudo apt install -y clang lld make git xxd
 
       - name: Clone ps5-payload-sdk
         run: git clone --depth=1 https://github.com/ps5-payload-dev/sdk /tmp/ps5-sdk-src
@@ -31,10 +28,10 @@ jobs:
       - name: Set SDK env
         run: echo "PS5_PAYLOAD_SDK=/opt/ps5-payload-sdk" >> $GITHUB_ENV
 
-      - name: Build payload
+      - name: Build payload via Makefile
         run: |
-          chmod +x ./build_correction.sh
-          ./build_correction.sh
+          make clean
+          make all
           echo "===== After build file list ====="
           ls -laR
 
