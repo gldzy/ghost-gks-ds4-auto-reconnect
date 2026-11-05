@@ -16,7 +16,7 @@ jobs:
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: uc64
+          msystem: CLANG64
           update: true
 
       - name: Install aarch64 clang
